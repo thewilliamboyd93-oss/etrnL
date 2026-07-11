@@ -23,14 +23,22 @@ class IdentityManifold(nn.Module, ModuleContract):
     """
 
     __contract__ = {
-        'methods': ['encode', 'generate', 'navigate', 'resonate',
-                     'interpolate', 'verify', 'synthesize', 'train_step'],
-        'guarantees': [
-            'manifold_point_is_irreversible',
-            'cross_modal_cycle_consistency',
-            'identity_separation',
+        "methods": [
+            "encode",
+            "generate",
+            "navigate",
+            "resonate",
+            "interpolate",
+            "verify",
+            "synthesize",
+            "train_step",
         ],
-        'max_latency_ms': 150,
+        "guarantees": [
+            "manifold_point_is_irreversible",
+            "cross_modal_cycle_consistency",
+            "identity_separation",
+        ],
+        "max_latency_ms": 150,
     }
 
     def __init__(self, config: Optional[ManifoldConfig] = None):
@@ -63,22 +71,28 @@ class IdentityManifold(nn.Module, ModuleContract):
 
         # Generator — reads directly from the manifold (no mapper needed)
         self.generator = nn.Sequential(
-            nn.Linear(dim, 256), nn.LayerNorm(256), nn.GELU(),
-            nn.Linear(256, 512), nn.LayerNorm(512), nn.GELU(),
+            nn.Linear(dim, 256),
+            nn.LayerNorm(256),
+            nn.GELU(),
+            nn.Linear(256, 512),
+            nn.LayerNorm(512),
+            nn.GELU(),
             nn.Linear(512, 3 * 256 * 256),
         )
 
         # Navigation directions — learned emotional/identity axes
-        self.directions = nn.ParameterDict({
-            'nostalgia': nn.Parameter(torch.randn(1, dim) * 0.1),
-            'curiosity': nn.Parameter(torch.randn(1, dim) * 0.1),
-            'sadness': nn.Parameter(torch.randn(1, dim) * 0.1),
-            'warmth': nn.Parameter(torch.randn(1, dim) * 0.1),
-            'humor': nn.Parameter(torch.randn(1, dim) * 0.1),
-            'formality': nn.Parameter(torch.randn(1, dim) * 0.1),
-            'energy': nn.Parameter(torch.randn(1, dim) * 0.1),
-            'reflectiveness': nn.Parameter(torch.randn(1, dim) * 0.1),
-        })
+        self.directions = nn.ParameterDict(
+            {
+                "nostalgia": nn.Parameter(torch.randn(1, dim) * 0.1),
+                "curiosity": nn.Parameter(torch.randn(1, dim) * 0.1),
+                "sadness": nn.Parameter(torch.randn(1, dim) * 0.1),
+                "warmth": nn.Parameter(torch.randn(1, dim) * 0.1),
+                "humor": nn.Parameter(torch.randn(1, dim) * 0.1),
+                "formality": nn.Parameter(torch.randn(1, dim) * 0.1),
+                "energy": nn.Parameter(torch.randn(1, dim) * 0.1),
+                "reflectiveness": nn.Parameter(torch.randn(1, dim) * 0.1),
+            }
+        )
 
         # Loss function for identity consistency
         self.identity_loss = nn.CosineEmbeddingLoss()
@@ -95,7 +109,7 @@ class IdentityManifold(nn.Module, ModuleContract):
         for t in tensors:
             if t is not None:
                 return t.device
-        return torch.device('cpu')
+        return torch.device("cpu")
 
     # ── Core Methods ─────────────────────────────────────────────────
 
@@ -184,9 +198,7 @@ class IdentityManifold(nn.Module, ModuleContract):
 
         Returns: Similarity scores between point and query
         """
-        return F.cosine_similarity(
-            point.unsqueeze(1), query.unsqueeze(0), dim=-1
-        )
+        return F.cosine_similarity(point.unsqueeze(1), query.unsqueeze(0), dim=-1)
 
     def interpolate(
         self,
@@ -231,7 +243,7 @@ class IdentityManifold(nn.Module, ModuleContract):
     def synthesize(
         self,
         point: torch.Tensor,
-        modality: str = 'face',
+        modality: str = "face",
     ) -> torch.Tensor:
         """
         Synthesize output from a manifold point.
@@ -242,11 +254,9 @@ class IdentityManifold(nn.Module, ModuleContract):
 
         Returns: Generated output for the requested modality
         """
-        if modality == 'face':
+        if modality == "face":
             return self.generate(point)
-        raise NotImplementedError(
-            f"Synthesis for '{modality}' not yet implemented"
-        )
+        raise NotImplementedError(f"Synthesis for '{modality}' not yet implemented")
 
     # ── Training ─────────────────────────────────────────────────────
 
@@ -271,8 +281,7 @@ class IdentityManifold(nn.Module, ModuleContract):
 
         # Identity consistency loss
         id_loss = self.identity_loss(
-            voice_point, face_point,
-            same_person_mask.float() * 2 - 1
+            voice_point, face_point, same_person_mask.float() * 2 - 1
         )
 
         # Cross-modal cycle consistency
@@ -293,7 +302,7 @@ class IdentityManifold(nn.Module, ModuleContract):
         optimizer.step()
 
         return {
-            'total_loss': total.item(),
-            'identity_loss': id_loss.item(),
-            'cycle_loss': cycle_loss.item(),
+            "total_loss": total.item(),
+            "identity_loss": id_loss.item(),
+            "cycle_loss": cycle_loss.item(),
         }

@@ -1,0 +1,17 @@
+Every Time You Code
+bash
+# 1. Right-click etrnL folder → Git Bash Here
+cd ~/Desktop/etrnL
+source .venv/Scripts/activate
+
+# 2. Open editor
+codium .
+
+# 3. Work on files in etrnl/
+
+# 4. Test as you go
+python.exe -c "from etrnl.manifold import IdentityManifold; print('works')"
+
+# 5. When something works, save it
+git add -A
+git commit -m "what you built"

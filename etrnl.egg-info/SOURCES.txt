@@ -1,9 +1,17 @@
 pyproject.toml
 etrnl/__init__.py
 etrnl/config.py
+etrnl/continuity.py
 etrnl/contracts.py
+etrnl/gradient.py
+etrnl/holograph.py
 etrnl/manifold.py
+etrnl/presence.py
+etrnl/privacy.py
+etrnl/resonance.py
+etrnl/self_prove.py
 etrnl.egg-info/PKG-INFO
 etrnl.egg-info/SOURCES.txt
 etrnl.egg-info/dependency_links.txt
 etrnl.egg-info/top_level.txt
+tests/test_manifold.py

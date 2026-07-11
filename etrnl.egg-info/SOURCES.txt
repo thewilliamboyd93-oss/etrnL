@@ -14,4 +14,12 @@ etrnl.egg-info/PKG-INFO
 etrnl.egg-info/SOURCES.txt
 etrnl.egg-info/dependency_links.txt
 etrnl.egg-info/top_level.txt
+tests/test_continuity.py
+tests/test_gradient.py
+tests/test_holograph.py
+tests/test_integration.py
 tests/test_manifold.py
+tests/test_presence.py
+tests/test_privacy.py
+tests/test_resonance.py
+tests/test_self_prove.py

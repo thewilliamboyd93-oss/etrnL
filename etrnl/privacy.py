@@ -4,6 +4,7 @@ import time
 import hashlib
 import torch
 from etrnl.contracts import ModuleContract
+from etrnl.config import ConsentAttribute
 
 
 class Privacy(ModuleContract):
@@ -36,10 +37,9 @@ class Privacy(ModuleContract):
 
     def filter(self, state_vector, consent_profile):
         filtered = state_vector.clone()
-        for attr, (start, end) in self.dimensions.items():
-            attr_obj = type(consent_profile)()
-            setattr(attr_obj, attr, True)
-            if consent_profile.is_denied(attr_obj):
+        for attr_name, (start, end) in self.dimensions.items():
+            attr = ConsentAttribute(attr_name)
+            if consent_profile.is_denied(attr):
                 filtered[:, start:end] = 0.0
         self.audit_log.append({"timestamp": time.time(), "action": "filter"})
         return filtered
